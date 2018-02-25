@@ -1,0 +1,51 @@
+.upload-container {
+  position: relative;
+  max-width: 100px;
+  margin: 0 auto;
+}
+
+.image {
+  opacity: 1;
+  width: 100%;
+  height: auto;
+  transition: .5s ease;
+  backface-visibility: hidden;
+}
+
+.default-upload {
+  transition: .5s ease;
+  opacity: 0;
+  position: absolute;
+  top: 42%;
+  left: 52%;
+  transform: translate(-50%, -50%);
+  -ms-transform: translate(-50%, -50%);
+  text-shadow: #000 1px 1px 1px;
+}
+
+.change-avatar {
+  left: 26%;
+}
+
+.remove-avatar {
+  left: 75%;
+  color: red;
+}
+
+.upload-container:hover .default-upload {
+  opacity: 1;
+}
+.default-upload input[type="file"] {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 25px;
+  height: 100%;
+  opacity: 0;
+}
+.default-upload input[type="file"] {
+  cursor: pointer;
+}
+.default-upload .fa-2x {
+  font-size: 1.5em;
+}

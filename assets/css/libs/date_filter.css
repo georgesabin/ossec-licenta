@@ -1,0 +1,68 @@
+/*
+
+	INSTRUCTIONS ---------------------------------------------------------------------------------
+  
+  1. link this stylesheet in the head of your HTML
+  	 <link href="YOUR PATH/date_filter.css" rel="stylesheet" type="text/css" />
+     
+  2. Set the file name as data-theme attribute on your input
+  	 <input data-theme="date_filter" />
+     
+  3. That's it!
+  
+  When you run script the style will be automatically applied.
+
+*/
+div.datedropper.date_filter {
+  border-radius: 8px;
+  width: 180px;
+}
+div.datedropper.date_filter .picker {
+  border-radius: 8px;
+  box-shadow: 0 0 32px 0px rgba(0, 0, 0, 0.1);
+}
+div.datedropper.date_filter .pick-l {
+  border-bottom-left-radius: 8px;
+  border-bottom-right-radius: 8px;
+}
+div.datedropper.date_filter:before,
+div.datedropper.date_filter .pick-submit,
+div.datedropper.date_filter .pick-lg-b .pick-sl:before,
+div.datedropper.date_filter .pick-m,
+div.datedropper.date_filter .pick-lg-h {
+  background-color: #EB5E28;
+}
+div.datedropper.date_filter .pick-y.pick-jump,
+div.datedropper.date_filter .pick li span,
+div.datedropper.date_filter .pick-lg-b .pick-wke,
+div.datedropper.date_filter .pick-btn {
+  color: #EB5E28;
+}
+div.datedropper.date_filter .picker,
+div.datedropper.date_filter .pick-l {
+  background-color: #FFF;
+}
+div.datedropper.date_filter .picker,
+div.datedropper.date_filter .pick-arw,
+div.datedropper.date_filter .pick-l {
+  color: #4D4D4D;
+}
+div.datedropper.date_filter .pick-m,
+div.datedropper.date_filter .pick-m .pick-arw,
+div.datedropper.date_filter .pick-lg-h,
+div.datedropper.date_filter .pick-lg-b .pick-sl,
+div.datedropper.date_filter .pick-submit {
+  color: #FFF;
+}
+div.datedropper.date_filter.picker-tiny:before,
+div.datedropper.date_filter.picker-tiny .pick-m {
+  background-color: #FFF;
+}
+div.datedropper.date_filter.picker-tiny .pick-m,
+div.datedropper.date_filter.picker-tiny .pick-m .pick-arw {
+  color: #4D4D4D;
+}
+div.datedropper.date_filter.picker-lkd .pick-submit {
+  background-color: #FFF;
+  color: #4D4D4D;
+}
