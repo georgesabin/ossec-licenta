@@ -43,7 +43,7 @@ $config['migration_type'] = 'sequential';
 | will migrate up. This must be set.
 |
 */
-$config['migration_table'] = 'smartbe_migrations';
+$config['migration_table'] = 'migrations';
 
 /*
 |--------------------------------------------------------------------------

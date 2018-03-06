@@ -74,13 +74,13 @@ $active_group = 'default';
 $query_builder = TRUE;
 
 $db['default'] = array(
-	'dsn'	=> 'mysql:host=localhost; dbname=testDB; charset=utf8;',
-	'hostname' => 'localhost',
+	'dsn'	=> 'mysql:host=192.168.114.132; dbname=smart_monitoring; charset=utf8;',
+	'hostname' => '192.168.114.132',
 	'username' => 'root',
 	'password' => 'sabingeorge95',
-	'database' => '',
+	'database' => 'smart_monitoring',
 	'dbdriver' => 'pdo',
-	'dbprefix' => '',
+	'dbprefix' => 'smart_monitoring_',
 	'pconnect' => FALSE,
 	'db_debug' => (ENVIRONMENT !== 'production'),
 	'cache_on' => FALSE,

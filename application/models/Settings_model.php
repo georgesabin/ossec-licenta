@@ -16,7 +16,7 @@ class Settings_model extends App_Model {
 
     return $this->db
       ->where('setting_code', $settingCode)
-      ->update('smartbe_settings', $data);
+      ->update($this->db->dbprefix . 'settings', $data);
 
   }
 
@@ -29,7 +29,7 @@ class Settings_model extends App_Model {
 
     return $this->db
       ->select('*')
-      ->from('smartbe_settings')
+      ->from($this->db->dbprefix . 'settings')
       ->get()->result();
 
   }
