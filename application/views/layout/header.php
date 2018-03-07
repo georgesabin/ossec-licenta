@@ -63,6 +63,15 @@ $menuItems = [
     'menu_icon'         => 'fa fa-dashboard',
     'menu_has_childs'   => false
   ],
+  [
+    'menu_controller'   => 'agent',
+    'menu_method'       => 'index',
+    'menu_name'         => ['agents'],
+    'menu_text'         => 'Agents',
+    'menu_text_short'   => 'A',
+    'menu_icon'         => 'fa fa-users',
+    'menu_has_childs'   => false
+  ]
   // [
   //   'menu_controller'   => '',
   //   'menu_method'       => '',

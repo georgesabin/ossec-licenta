@@ -22,7 +22,7 @@ class Audit_model extends App_Model {
     $data['log_date'] = date('Y-m-d H:i:s');
 
     // Insert the log
-    $this->db->insert('smartbe_audit', $data);
+    $this->db->insert('audit', $data);
 
     // Return the inserted id
     return $this->db->insert_id();
@@ -41,7 +41,7 @@ class Audit_model extends App_Model {
 
     return $this->db
       ->select('*')
-      ->from('smartbe_audit')
+      ->from('audit')
       ->where('log_id', $logId)->get()->row();
 
   }
@@ -56,8 +56,8 @@ class Audit_model extends App_Model {
 
     // Default query
     $this->db->select('log_id, log_action, log_date, user_full_name as log_user, user_id as log_user_id, log_target_entity_type, log_target_entity_id, log_value')
-      ->from('smartbe_audit')
-      ->join('smartbe_users', 'smartbe_users.user_id=smartbe_audit.log_user_id', 'left');
+      ->from('audit')
+      ->join('users', 'users.user_id=audit.log_user_id', 'left');
 
     // Add the conditions: The searching is AND type
     if ($date_from_audit != null) {
@@ -86,7 +86,7 @@ class Audit_model extends App_Model {
   **/
   public function getAuditCount(string $date_from_audit = null, string $date_to_audit = null, string $user = null, string $log_action = null, string $target_type = null) {
 
-    $this->db->select('count(*) as total')->from('smartbe_audit')->join('smartbe_users', 'smartbe_users.user_id=smartbe_audit.log_user_id', 'left');
+    $this->db->select('count(*) as total')->from('audit')->join('users', 'users.user_id=audit.log_user_id', 'left');
 
     // Add the conditions: The searching is AND type
     if ($date_from_audit != null) {
@@ -116,7 +116,7 @@ class Audit_model extends App_Model {
 
     return $this->db
       ->select('DISTINCT user_full_name', FALSE)
-      ->from('smartbe_users')
+      ->from('users')
       ->where('user_full_name <>', '')->get()->result();
 
   }

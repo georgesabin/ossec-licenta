@@ -47,7 +47,7 @@ class Migration_create_base extends CI_Migration {
     $this->db->query('ALTER TABLE `' . $this->db->dbprefix . 'keys` ENGINE = InnoDB');
 
     ## Create Table audit
-    /*$this->dbforge->add_field([
+    $this->dbforge->add_field([
       'log_id' => [
         'type'           => 'int',
         'constraint'     => '11',
@@ -82,7 +82,7 @@ class Migration_create_base extends CI_Migration {
     $this->dbforge->add_key('log_id');
     $this->dbforge->add_key('log_action');
     $this->dbforge->create_table('audit', true);
-    $this->db->query('ALTER TABLE  `audit` ENGINE = InnoDB');*/
+    $this->db->query('ALTER TABLE  `' . $this->db->dbprefix . 'audit` ENGINE = InnoDB');
 
     ## Create Table keys
     /*$this->dbforge->add_field([

@@ -17,7 +17,7 @@ class Users_model extends App_Model {
   * @return object
   **/
   public function getUserById(int $userId) {
-    return $this->db->select('*')->from('smartbe_users')->where('user_id', $userId)->where('user_removed', 0)->get()->row();
+    return $this->db->select('*')->from('users')->where('user_id', $userId)->where('user_removed', 0)->get()->row();
   }
 
   /**
@@ -28,7 +28,7 @@ class Users_model extends App_Model {
   * @return object
   **/
   public function getUserByUserName(string $userName) {
-    return $this->db->select('*')->from('smartbe_users')->where('user_name', $userName)->where('user_removed', 0)->get()->row();
+    return $this->db->select('*')->from('users')->where('user_name', $userName)->where('user_removed', 0)->get()->row();
   }
 
   /**
@@ -41,7 +41,7 @@ class Users_model extends App_Model {
   **/
   public function checkPassword(string $userName, string $userPassword) {
 
-    $checkUser = $this->db->select('*')->from('smartbe_users')->where('user_name', $userName)->where('user_password', $userPassword)->where('user_removed', 0)->get()->row();
+    $checkUser = $this->db->select('*')->from('users')->where('user_name', $userName)->where('user_password', $userPassword)->where('user_removed', 0)->get()->row();
 
     return isset($checkUser->user_id) ? $checkUser->user_id : false;
 
@@ -56,11 +56,11 @@ class Users_model extends App_Model {
   **/
   public function checkUserSession(string $sessionKey) {
 
-    $getSession = $this->db->select('*')->from('smartbe_sessions')->where('session_key', $sessionKey)->get()->row();
+    $getSession = $this->db->select('*')->from('sessions')->where('session_key', $sessionKey)->get()->row();
 
     if(isset($getSession->session_id)) {
       $this->db->where('session_key', $sessionKey)->update(
-        'smartbe_sessions',
+        'sessions',
         ['session_last_used' => date('Y-m-d H:i:s')]
       );
       return true;
@@ -83,7 +83,7 @@ class Users_model extends App_Model {
     $sessionKey = rand(1000, 9999).time().rand(1000, 9999);
 
     $this->db->insert(
-      'smartbe_sessions',
+      'sessions',
       [
         'session_user_id'       => $userId,
         'session_key'           => $sessionKey,
@@ -105,7 +105,7 @@ class Users_model extends App_Model {
   **/
   public function destroySession(string $sessionKey) {
 
-    $this->db->where('session_key', $sessionKey)->delete('smartbe_sessions');
+    $this->db->where('session_key', $sessionKey)->delete('sessions');
 
     return true;
 
@@ -120,7 +120,7 @@ class Users_model extends App_Model {
   **/
   public function destroyUserSessions(int $userId) {
 
-    $this->db->where('session_user_id', $userId)->delete('smartbe_sessions');
+    $this->db->where('session_user_id', $userId)->delete('sessions');
     return true;
 
   }
@@ -133,7 +133,7 @@ class Users_model extends App_Model {
   * @return array
   **/
   public function getUsers(array $data) {
-    $this->db->select('user_id, user_full_name, user_name, user_role, user_mail, user_created_date, user_status')->from('smartbe_users');
+    $this->db->select('user_id, user_full_name, user_name, user_role, user_mail, user_created_date, user_status')->from('users');
     if ($data['user_full_name'] !== '') { $this->db->like('user_full_name', $data['user_full_name'], 'both'); }
     if ($data['user_name'] !== '') { $this->db->like('user_name', $data['user_name'], 'both'); }
     if ($data['user_role'] !== '') { $this->db->like('user_role', $data['user_role'], 'both'); }
@@ -156,7 +156,7 @@ class Users_model extends App_Model {
   * @return array
   **/
   public function getTotalUsers(array $data) {
-    $this->db->select('count(*) as total')->from('smartbe_users');
+    $this->db->select('count(*) as total')->from('users');
     if ($data['user_full_name'] !== '') { $this->db->like('user_full_name', $data['user_full_name'], 'both'); }
     if ($data['user_name'] !== '') { $this->db->like('user_name', $data['user_name'], 'both'); }
     if ($data['user_role'] !== '') { $this->db->like('user_role', $data['user_role'], 'both'); }
@@ -174,7 +174,7 @@ class Users_model extends App_Model {
   * @return int
   **/
   public function updateUser(int $userId, array $data) {
-    return $this->db->where('user_id', $userId)->where('user_removed', 0)->update('smartbe_users', $data);
+    return $this->db->where('user_id', $userId)->where('user_removed', 0)->update('users', $data);
   }
 
   /**
@@ -187,7 +187,7 @@ class Users_model extends App_Model {
   public function insertUser(array $data) {
 
     // Insert and return the new user`s id
-    return $this->db->insert('smartbe_users', $data) ? $this->db->insert_id() : false;
+    return $this->db->insert('users', $data) ? $this->db->insert_id() : false;
 
   }
 
@@ -199,7 +199,7 @@ class Users_model extends App_Model {
   * @return bool
   **/
   public function deleteUser(int $userId) {
-    return $this->db->where('user_id', $userId)->delete('smartbe_users');
+    return $this->db->where('user_id', $userId)->delete('users');
   }
 
   /**
@@ -210,7 +210,7 @@ class Users_model extends App_Model {
   public function getLoginRulesUsers(int $logUserId) {
 
     return $this->db->select('count(*) as total, log_action')
-    ->from('smartbe_audit')->where('log_action', 'user.login')
+    ->from('audit')->where('log_action', 'user.login')
     ->where('log_value LIKE \'{"result":true%\'')
     ->or_where('log_action LIKE \'rule.%bound.insert\'')
     ->or_where('log_action', 'user.insert')
@@ -227,7 +227,7 @@ class Users_model extends App_Model {
   public function getLatestActivity(int $logUserId) {
 
     return $this->db->select('log_id, log_action, log_date')
-    ->from('smartbe_audit')->where('log_user_id', $logUserId)->limit(5)
+    ->from('audit')->where('log_user_id', $logUserId)->limit(5)
     ->order_by('log_id', 'DESC')->get()->result();
 
   }
