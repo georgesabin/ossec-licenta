@@ -3,6 +3,11 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class App_Controller extends CI_Controller {
 
+  // Python Module Dates
+  protected $serverIP;
+  protected $username;
+  protected $password;
+
   public $publicRoutes = ['login', 'app/loginAction', 'cli/gitHook'];
   public $errorSentry;
   public $errorSentryHandler;
@@ -12,6 +17,11 @@ class App_Controller extends CI_Controller {
   public function __construct() {
 
     parent::__construct();
+
+    // Python Module Dates
+    $this->serverIP = 'http://192.168.114.132:5000/';
+    $this->username = 'sabin';
+    $this->password = 'python';
 
     // Check for migrations and run them if there are new versions
     if (isset($this->migration) && $this->migration->latest() === FALSE) {

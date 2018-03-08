@@ -39,7 +39,7 @@ mysql = MySQL(app)
 @app.route('/agent/add', methods=['POST'])
 @auth.login_required
 def add_agent():
-	if not request.json or not 'agent_name' in request.json or not 'agent_ip' in request.json:
+	if not request.json or 'agent_name' is None or 'agent_ip' is None or not 'agent_name' in request.json or not 'agent_ip' in request.json:
 		return jsonify({
 			'status_code': 400,
 			'response': 'Bad Request'
@@ -49,6 +49,18 @@ def add_agent():
 
 	agent_name = request.json['agent_name']
 	agent_ip = request.json['agent_ip']
+
+	# Check if IP already exists in DB
+	smartMonitoring.execute('SELECT CASE WHEN EXISTS (SELECT agent_name FROM smart_monitoring_agents WHERE agent_ip=\'' + agent_ip + '\') THEN \'Yes\' ELSE \'No\' END as agent_exists')
+
+	rv = smartMonitoring.fetchall()
+
+	if str(rv[0][0]) == 'Yes':
+		return jsonify({
+				'description': 'IP-ul ' + agent_ip + ' exista in baza de date!',
+				'response': 'Conflict',
+				'status_code': 409
+			}), 409
 
 	# Generate a file with IP and name agent
 	subprocess.check_output('sudo sh -c "echo ' + agent_ip + ', ' + agent_name + ' > ip_name_agent.txt"', shell=True)
@@ -62,7 +74,7 @@ def add_agent():
 		return make_response(jsonify({
 				'description': e.output,
 				'response': 'Not Found',
-				'returncode': e.returncode
+				'returncode': e.returncode,
 				'status_code': 404,
 			}), 404)
 
@@ -71,7 +83,8 @@ def add_agent():
 		return jsonify({
 			'description': agent_name + ' agent already present!',
 			'response': 'Bad Request',
-			'status_code': 400
+			'status_code': 400,
+			'type': 'warning'
 		}), 400
  
 
@@ -100,7 +113,9 @@ def add_agent():
 	}
 	return jsonify({
 		'agent': agent,
-		'response': agentResponse
+		'description': agentResponse,
+		'response': 'Created',
+		'status_code': 201
 		}), 201
 
 @app.route('/agent/key/<string:agent_id>', methods=['GET'])

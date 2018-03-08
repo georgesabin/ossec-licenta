@@ -100,8 +100,11 @@ function submit_form(form_selector, target, confirmation, callback, notification
           }
         } else {
 
+          // Clean the target's message
+          $(target).html('');
+
           // Run callback if there is any
-          if(typeof callback !== 'undefined' && callback !== false) { callback(); }
+          if(typeof callback !== 'undefined' && callback !== false) { console.log(1); callback(data); }
 
           if(typeof notification === 'undefined') { notification = []; }
           notification.enable   = (typeof notification.enable !== 'undefined') ? notification.enable : true;
