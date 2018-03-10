@@ -12,7 +12,39 @@ $this->load->view(
 
 <div class="row">
   <div class="col-md-12">
-    <button type="button" id="add-agent" class="btn btn-primary btn-lg">Adauga Agent</button>
+    <button type="button" id="add-agent" class="btn btn-primary btn-lg">Add Agent</button>
+    <div class="card">
+      <div class="card-header">
+        <h4 class="card-title">OSSEC Agents</h4>
+      </div>
+      <div class="card-content">
+        <div class="blockLoader agentsTableLoader"><div class="spinner"><div class="rect1"></div><div class="rect2"></div><div class="rect3"></div><div class="rect4"></div><div class="rect5"></div></div></div>
+        <table class="table table-striped dataTable">
+          <thead>
+            <tr class="active">
+              <th>ID</th>
+              <th>Agent ID</th>
+              <th>Name</th>
+              <th>IP</th>
+              <th width="130">Date created</th>
+              <th width="70" class="all">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+          </tbody>
+          <tfoot>
+            <tr class="active">
+              <th>ID</th>
+              <th>Agent ID</th>
+              <th>Name</th>
+              <th>IP</th>
+              <th width="130">Date created</th>
+              <th width="70" class="all">Action</th>
+            </tr> 
+          </tfoot>
+        </table>
+      </div>
+    </div>
   </div>
 </div>
 

@@ -4,48 +4,6 @@ class Migration_create_base extends CI_Migration {
 
   public function up() {
 
-    ## Create Table keys
-    $this->dbforge->add_field([
-      'id' => [
-        'type'           => 'int',
-        'constraint'     => '11',
-        'auto_increment' => true
-      ],
-      'user_id' => [
-        'type'       => 'int',
-        'constraint' => '11',
-      ],
-      'key' => [
-        'type'       => 'varchar',
-        'constraint' => '40',
-      ],
-      'level' => [
-        'type'       => 'int',
-        'constraint' => '2'
-      ],
-      'ignore_limits' => [
-        'type'       => 'tinyint',
-        'constraint' => '1',
-        'default'    => 0
-      ],
-      'is_private_key' => [
-        'type'       => 'tinyint',
-        'constraint' => '1',
-        'default'    => 0
-      ],
-      'ip_addresses' => [
-        'type' => 'text',
-        'null' => true
-      ],
-      'date_created' => [
-        'type'       => 'int',
-        'constraint' => '11'
-      ]
-    ]);
-    $this->dbforge->add_key('id', true);
-    $this->dbforge->create_table('keys', true);
-    $this->db->query('ALTER TABLE `' . $this->db->dbprefix . 'keys` ENGINE = InnoDB');
-
     ## Create Table audit
     $this->dbforge->add_field([
       'log_id' => [
@@ -83,41 +41,6 @@ class Migration_create_base extends CI_Migration {
     $this->dbforge->add_key('log_action');
     $this->dbforge->create_table('audit', true);
     $this->db->query('ALTER TABLE  `' . $this->db->dbprefix . 'audit` ENGINE = InnoDB');
-
-    ## Create Table keys
-    /*$this->dbforge->add_field([
-      'key_id' => [
-        'type'           => 'int',
-        'constraint'     => '11',
-        'unsigned'       => true,
-        'auto_increment' => true
-      ],
-      'key_value' => [
-        'type'       => 'varchar',
-        'constraint' => '40'
-      ],
-      'key_datetime_created' => [
-        'type' => 'datetime',
-      ],
-      'key_datetime_last_used' => [
-        'type' => 'datetime',
-      ],
-      'key_description' => [
-        'type'       => 'varchar',
-        'constraint' => '255'
-      ],
-      'key_status' => [
-        'type'       => 'bit',
-        'constraint' => '1',
-        'default'    => 1
-      ]
-    ]);
-    $this->dbforge->add_key('key_id', true);
-    $this->dbforge->add_key('key_id');
-    $this->dbforge->add_key('key_value', true);
-    $this->dbforge->add_key('key_value');
-    $this->dbforge->create_table('keys', true);
-    $this->db->query('ALTER TABLE  `keys` ENGINE = InnoDB');*/
 
     ## Create Table migrations
     //$this->dbforge->add_field('`version` bigint(20) NOT NULL ');
@@ -200,10 +123,7 @@ class Migration_create_base extends CI_Migration {
     # seed the settings db
     $this->db->query('INSERT INTO `' . $this->db->dbprefix . 'settings` (`setting_id`, `setting_code`, `setting_value`, `setting_changed_date`, `setting_changed_by`, `setting_changed_audit_id`) VALUES ("1", "application_url_auto", "on", null, null, null)');
     $this->db->query('INSERT INTO `' . $this->db->dbprefix . 'settings` (`setting_id`, `setting_code`, `setting_value`, `setting_changed_date`, `setting_changed_by`, `setting_changed_audit_id`) VALUES ("2", "application_url", "", null, null, null)');
-    $this->db->query('INSERT INTO `' . $this->db->dbprefix . 'settings` (`setting_id`, `setting_code`, `setting_value`, `setting_changed_date`, `setting_changed_by`, `setting_changed_audit_id`) VALUES ("3", "application_title", "CI App", null, null, null)');
-    $this->db->query('INSERT INTO `' . $this->db->dbprefix . 'settings` (`setting_id`, `setting_code`, `setting_value`, `setting_changed_date`, `setting_changed_by`, `setting_changed_audit_id`) VALUES ("4", "application_sentry_status", "off", null, null, null)');
-    $this->db->query('INSERT INTO `' . $this->db->dbprefix . 'settings` (`setting_id`, `setting_code`, `setting_value`, `setting_changed_date`, `setting_changed_by`, `setting_changed_audit_id`) VALUES ("5", "application_sentry_dsn", "", null, null, null)');
-    $this->db->query('INSERT INTO `' . $this->db->dbprefix . 'settings` (`setting_id`, `setting_code`, `setting_value`, `setting_changed_date`, `setting_changed_by`, `setting_changed_audit_id`) VALUES ("7", "application_sentry_dsn_public", "", null, null, null)');
+    $this->db->query('INSERT INTO `' . $this->db->dbprefix . 'settings` (`setting_id`, `setting_code`, `setting_value`, `setting_changed_date`, `setting_changed_by`, `setting_changed_audit_id`) VALUES ("3", "application_title", "Smart Monitoring", null, null, null)');
     $this->db->query('INSERT INTO `' . $this->db->dbprefix . 'settings` (`setting_id`, `setting_code`, `setting_value`, `setting_changed_date`, `setting_changed_by`, `setting_changed_audit_id`) VALUES ("8", "application_logo", "", null, null, null)');
 
     ## Create Table users
@@ -284,7 +204,7 @@ class Migration_create_base extends CI_Migration {
     $this->db->query('ALTER TABLE  `' . $this->db->dbprefix . 'users` ENGINE = InnoDB');
 
     $this->db->query('INSERT INTO `' . $this->db->dbprefix . 'users` (`user_id`, `user_name`, `user_mail`, `user_full_name`, `user_password`, `user_created_date`, `user_created_by`, `user_last_change_date`, `user_last_change_by`, `user_last_change_audit_id`, `user_role`, `user_status`, `user_removed`, `user_removed_date`)
-    VALUES(NULL, "admin", "sabyn_george@yahoo.com", "Admin", "08c1df5f950179814d83a5ac0a6ceba42a0b9da6", "'.date('Y-m-d H:i:s').'", "0", NULL, NULL, NULL, "admin", "1", "0", NULL)');
+    VALUES(NULL, "admin", "sabyn_george@yahoo.com", "Admin", "7838bd3ee3cc110a6dc8b49567dfcfebd94e2237", "'.date('Y-m-d H:i:s').'", "0", NULL, NULL, NULL, "admin", "1", "0", NULL)');
   }
 
   public function down()	{

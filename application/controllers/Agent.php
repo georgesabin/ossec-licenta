@@ -7,11 +7,30 @@ class Agent extends App_Controller {
 
         parent::__construct();
 
+        // Load the agent model
+        $this->load->model('agent_model');
+
     }
 
     public function index() {
 
         $this->load->view('agents/index');
+
+    }
+
+    public function getAgents() {
+
+        $dataAgent = $this->agent_model->getAgents();
+
+        foreach ($dataAgent as $key => $agent) {
+            $agent->action = '<button class="btn btn-danger btn-xs" onclick="removeAgent(\'' . $agent->agent_id . '\');">Remove</button>';
+        }
+
+        echo json_encode([
+            'data'            => $dataAgent,
+            'recordsTotal'    => (int)count($dataAgent),
+            'recordsFiltered' => (int)count($dataAgent)
+          ]);
 
     }
 
@@ -59,14 +78,30 @@ class Agent extends App_Controller {
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_USERPWD, "$this->username:$this->password");
         curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
-        $output = curl_exec($ch);
+        $result = curl_exec($ch);
         $info = curl_getinfo($ch);
         $error = curl_error($ch);
         curl_close($ch);
-        echo $output;
-        // echo '<pre>' . print_r($output, true) . '</pre>';
+        echo $result;
+        // echo '<pre>' . print_r($result, true) . '</pre>';
         // echo '<pre>' . print_r($error, true) . '</pre>';
         // echo '<pre>' . print_r($info, true) . '</pre>';
+
+    }
+
+    public function removeAgent(string $agent_id) {
+
+        $url = $this->serverIP . 'agent/remove/' . $agent_id;
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'DELETE');
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_USERPWD, "$this->username:$this->password");
+        curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
+        $result = curl_exec($ch);
+        curl_close($ch);
+
+        echo $result;
 
     }
 

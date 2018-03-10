@@ -4,8 +4,8 @@
 import subprocess
 from subprocess import call
 
-#import os
-#import sqlite3
+# Others
+import time
 
 # Flask framework and other things
 from flask import Flask, request, session, g, redirect, url_for, abort, render_template, flash, jsonify, make_response
@@ -13,6 +13,7 @@ from flask_mysqldb import MySQL
 from flask_httpauth import HTTPBasicAuth
 
 app = Flask(__name__)
+
 # MySQL Config
 app.config['MYSQL_HOST'] = '192.168.114.132'
 app.config['MYSQL_USER'] = 'root'
@@ -95,15 +96,10 @@ def add_agent():
 
 	agent_id = stringAgentID.replace('ID:', '').strip()
 
-	# a = subprocess.check_output(('sed', '-e', 's/^ID://'), stdin=t.stdout)
-	# Wait for child process to terminate
-	# t.wait()
-	# v = subprocess.check_output(('sed', 's/\/n//'), stdin=a.stdout, shell=True)
-	# Wait for child process to terminate
-	# a.wait()
-
 	# Insert agent's dates in table
-	smartMonitoring.execute('INSERT INTO smart_monitoring_agents (agent_id, agent_name, agent_ip) VALUES("' + agent_id + '", "' + agent_name + '", "' + agent_ip + '")')
+	currentDate = time.strftime('%Y-%m-%d %H:%M:%S')
+	
+	smartMonitoring.execute('INSERT INTO smart_monitoring_agents (agent_id, agent_name, agent_ip, agent_date_created) VALUES("' + agent_id + '", "' + agent_name + '", "' + agent_ip + '", "' + currentDate + '")')
 	smartMonitoring.execute('COMMIT')
 
 	agent = {
@@ -118,10 +114,10 @@ def add_agent():
 		'status_code': 201
 		}), 201
 
+# Generate agent key
 @app.route('/agent/key/<string:agent_id>', methods=['GET'])
 @auth.login_required
 def get_key_agent(agent_id = None):
-	# if isinstance(agent_id, str):
 	# Try to execute the command and if this returned an error, then return response with output and set 404 code status
 	try:
 		key = subprocess.check_output('sudo /var/ossec/bin/manage_agents -e ' + agent_id, shell=True)
@@ -133,25 +129,50 @@ def get_key_agent(agent_id = None):
 
 	return make_response(jsonify({
 		'response': key
-	}), 201)
+	}), 200)
+
+@app.route('/agent/remove/<string:agent_id>', methods=['DELETE'])
+@auth.login_required
+def remove_agent(agent_id = None):
+	if agent_id is None:
+		return make_response(jsonify({
+			'response': 'Bad Request',
+			'status_code': 400
+		}), 400)
+
+	# This var is used when try to remove the agent and grep return an error code
+	# Grep return the error code just when agent_id still exists in OSSEC
+	# If agent not exists in OSSEC, errorCode remain with same value
+	errorCode = 0
+
+	try:
+		removed = subprocess.check_output('sudo /var/ossec/bin/manage_agents -r ' + agent_id + ' | grep "Invalid"', shell=True)
+	except subprocess.CalledProcessError as e:
+		errorCode = jsonify(e.returncode)
+	
+	# If grep cmd doesn't return an error and the 'Invalid' string exists in removed output
+	if errorCode == 0 and 'Invalid' in removed:
+		return make_response(jsonify({
+			'error': 'Not Found',
+			'response': 'Invalid ID ' + agent_id + ' given. ID is not present.'
+		}), 404)
+
+	# Restart OSSEC for changes to take effect
+	subprocess.check_output('sudo /var/ossec/bin/ossec-control restart', shell=True)
+
+	# REMOVE FROM TABLE -> flag = 1
+	smartMonitoring = mysql.connection.cursor()
+	smartMonitoring.execute('UPDATE smart_monitoring_agents SET agent_flag_removed=1 WHERE agent_id="' + agent_id + '"')
+	smartMonitoring.execute('COMMIT')
+
+	return make_response(jsonify({
+		'response': 'Agent ' + agent_id + ' removed.' 
+	}), 200)
 
 @app.route('/')
 def index():
-	#process = subprocess.Popen(['touch', 'ip_name_agent.txt'], stdout=subprocess.PIPE)
-	#stdout = process.communicate()[0]
-	#print 'STDOUT:{}'.format(stdout)
-	#return process.poll()
-	#while True:
-		#outt = process.stdout.readline()
-		#if outt == '' and process.poll() is not None:
-		#	break
-		#if outt:
-		#	print outt.strip()
-	#	rc = process.poll()
-	# cur = mysql.connection.cursor()
-	# cur.execute('CREATE TABLE IF NOT EXISTS test (id INT(6) AUTO_INCREMENT PRIMARY KEY, firstname VARCHAR(30) NOT NULL)')
     return "Python Module"
 
 if __name__ == '__main__':
-#        app.run(debug=True)
+	# app.run(debug=True)
 	app.run(host='192.168.114.132')

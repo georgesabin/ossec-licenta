@@ -160,8 +160,6 @@ $menuItems = [
   var baseURL = '<?= $ci->baseURL; ?>';
   var serverIP = location.host.split(':');
   var serverIP = serverIP[0];
-  var enableSentry = <?= $this->settings->application_sentry_status === 'on' ? 1 : 0; ?>;
-  if(enableSentry) Raven.config('<?= $this->settings->application_sentry_dsn_public; ?>').install();
   </script>
   <?= $this->minify->deploy_css(false); ?>
   <?= $this->minify->deploy_js(false); ?>

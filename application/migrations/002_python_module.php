@@ -11,7 +11,7 @@ class Migration_python_module extends CI_Migration {
                 'auto_increment' => true
             ],
             'agent_id' => [
-                'type' => 'int',
+                'type' => 'varchar',
                 'constraint' => '11',
                 'unique' => true
             ],
@@ -24,6 +24,13 @@ class Migration_python_module extends CI_Migration {
                 'type' => 'varchar',
                 'constraint' => '33',
                 'unique' => true
+            ],
+            'agent_date_created' => [
+                'type' => 'datetime',
+            ],
+            'agent_flag_removed' => [
+                'type' => 'tinyint',
+                'default' => 0
             ]
         ]);
         $this->dbforge->add_key('id', true);
