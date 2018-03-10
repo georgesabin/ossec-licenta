@@ -12,7 +12,11 @@ $this->load->view(
 
 <div class="row">
   <div class="col-md-12">
-    <button type="button" id="add-agent" class="btn btn-primary btn-lg">Add Agent</button>
+    <div class="card">
+      <div class="card-content">
+        <button type="button" id="add-agent" class="btn btn-primary btn-lg">Add Agent</button>
+      </div>
+    </div>
     <div class="card">
       <div class="card-header">
         <h4 class="card-title">OSSEC Agents</h4>
@@ -22,24 +26,24 @@ $this->load->view(
         <table class="table table-striped dataTable">
           <thead>
             <tr class="active">
-              <th>ID</th>
-              <th>Agent ID</th>
-              <th>Name</th>
-              <th>IP</th>
-              <th width="130">Date created</th>
-              <th width="70" class="all">Action</th>
+              <th width="25">ID</th>
+              <th width="50">Agent ID</th>
+              <th width="100">Name</th>
+              <th width="100">IP</th>
+              <th width="680">Date created</th>
+              <th width="50" class="all">Action</th>
             </tr>
           </thead>
           <tbody>
           </tbody>
           <tfoot>
             <tr class="active">
-              <th>ID</th>
-              <th>Agent ID</th>
-              <th>Name</th>
-              <th>IP</th>
-              <th width="130">Date created</th>
-              <th width="70" class="all">Action</th>
+              <th width="25">ID</th>
+              <th width="50">Agent ID</th>
+              <th width="100">Name</th>
+              <th width="100">IP</th>
+              <th width="680">Date created</th>
+              <th width="50" class="all">Action</th>
             </tr> 
           </tfoot>
         </table>
@@ -87,8 +91,24 @@ $this->load->view(
           if (dataResult.description != undefined) {
             $('#requestAlert').html(dataResult.description);
             $('.alert').fadeIn();
+            // Reload table
+            agentsTable.api().ajax.reload();
           }
         }, {});">Salveaza</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Key agent modal -->
+<div class="modal fade" id="keyAgent" tabindex="-1" role="dialog" aria-labelledby="keyAgent">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-body">
+        
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Inchide</button>
       </div>
     </div>
   </div>

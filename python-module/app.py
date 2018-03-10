@@ -84,9 +84,8 @@ def add_agent():
 		return jsonify({
 			'description': agent_name + ' agent already present!',
 			'response': 'Bad Request',
-			'status_code': 400,
-			'type': 'warning'
-		}), 400
+			'status_code': 409
+		}), 409
  
 
 	echoResponse = subprocess.Popen(['echo', agentResponse], stdout=subprocess.PIPE)

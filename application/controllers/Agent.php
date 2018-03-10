@@ -23,7 +23,8 @@ class Agent extends App_Controller {
         $dataAgent = $this->agent_model->getAgents();
 
         foreach ($dataAgent as $key => $agent) {
-            $agent->action = '<button class="btn btn-danger btn-xs" onclick="removeAgent(\'' . $agent->agent_id . '\');">Remove</button>';
+            $agent->action = '<button class="btn btn-danger btn-xs" onclick="removeAgent(\'' . $agent->agent_id . '\');">Remove</button> ';
+            $agent->action .= '<button class="btn btn-info btn-xs" onclick="getAgentKey(\'' . $agent->agent_id . '\');">Generate Key</button>';
         }
 
         echo json_encode([
@@ -95,6 +96,21 @@ class Agent extends App_Controller {
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'DELETE');
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_USERPWD, "$this->username:$this->password");
+        curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
+        $result = curl_exec($ch);
+        curl_close($ch);
+
+        echo $result;
+
+    }
+
+    public function getAgentKey(string $agent_id) {
+
+        $url = $this->serverIP . 'agent/key/' . $agent_id;
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_USERPWD, "$this->username:$this->password");
         curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);

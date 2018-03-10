@@ -15,6 +15,7 @@ class Agent_model extends App_Model {
             ->select('*')
             ->from('agents')
             ->where('agent_flag_removed', 0)
+            ->order_by('id', 'DESC')
             ->get()->result();
 
     }

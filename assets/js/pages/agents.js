@@ -45,8 +45,6 @@ $(document).ready(function() {
 
         $('#addAgent').modal('show');
 
-        
-
     });
 
 });
@@ -61,6 +59,24 @@ function removeAgent(agent_id) {
         },
         success: function(data) {
             agentsTable.api().ajax.reload();
+        }
+    });
+
+}
+
+function getAgentKey(agent_id){
+
+    $.ajax({
+        url: baseURL + 'agent/getAgentKey/' + agent_id,
+        method: 'POST',
+        data: {
+            token: Cookies.get('token')
+        },
+        success: function(data) {
+            console.log(data);
+            data = JSON.parse(data);
+            $('#keyAgent').modal('show');
+            $('#keyAgent .modal-body').html('<h4>' + data.response + '</h4>');
         }
     });
 
