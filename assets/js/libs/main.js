@@ -56,3 +56,16 @@ function showLoader(element) {
 function hideLoader(element) {
 	$(element).fadeOut();
 }
+
+function serverAction(cmdType) {
+	$.ajax({
+		url: baseURL + 'app/serverAction/' + cmdType,
+		method: 'GET',
+		data: {
+				token: Cookies.get('token')
+		},
+		success: function(data) {
+				
+		}
+});
+}

@@ -9,6 +9,19 @@ class App extends App_Controller {
 
   }
 
+  public function serverAction($cmd_type) {
+
+    $url = $this->serverIP . 'server/' . $cmd_type;
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, $url);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_USERPWD, "$this->username:$this->password");
+    curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
+    $result = curl_exec($ch);
+    curl_close($ch);
+
+  }
+
   public function my_profile() {
 
     $allActions = $this->users_model->getLoginRulesUsers($this->session->userId);
@@ -262,56 +275,6 @@ class App extends App_Controller {
     } else {
       echo json_encode(['true']);
     }
-  }
-
-  public function feedback() {
-    $this->load->view('app/feedback');
-  }
-
-  public function feedbackAction() {
-
-    // Load the form validation
-    $this->load->library('form_validation');
-
-    // Define rules
-    $formValidationRules = [
-      ['field' => 'feedback_message', 'rules' => 'trim|required', 'label' => 'Message']
-    ];
-
-    // Set the rules
-    $this->form_validation->set_rules($formValidationRules);
-
-    // Validate the form
-    if ($this->form_validation->run() === false) {
-      echo json_encode(['has_errors' => true, 'errors' => $this->form_validation->error_array()]);
-      exit;
-    }
-
-    $user = $this->users_model->getUserById($this->session->userId);
-
-    $this->load->library('email');
-
-    $this->email->initialize([
-      'protocol' => 'smtp',
-      'smtp_user'=> 'smartbe@2enne.net',
-      'smtp_pass'=> 'bssitcompany#',
-      'smtp_host'=> 'mail.2enne.net',
-      'smtp_port'=> '25',
-      'mailtype' => 'html'
-    ]);
-    $this->email->from('smartbe@2enne.net', 'Smart BE');
-
-    $this->email->to('a.chisca@software-dep.net');
-    $this->email->subject('Smart BE Feedback');
-    $this->email->set_newline("\r\n");
-    $this->email->message('<span style="font-family: arial narrow, sans-serif">The following message was written by <strong>'.$user->user_full_name.'</strong> ( <a href="mailto: '.$user->user_mail.'">'.$user->user_mail.'</a> ) from '.base_url().' :<br /><br/>'.$this->input->post('feedback_message').'</span>');
-    if($this->email->send()) {
-      echo '<script type="text/javascript">$(\'*[data-dismiss="modal"]\').trigger(\'click\'); swal(\'Thank you!\', \'Your mail was sent successfully and it will be read soon us. Have a nice and productive day!\', \'success\');</script>';
-    }else{
-      echo '<script type="text/javascript">$(\'*[data-dismiss="modal"]\').trigger(\'click\'); swal(\'Whoops!\', \'Looks like there are some errors here, please send an e-mail to us at <a href="mailto: support@software-dep.net">support@software-dep.net</a> and we will respond as soon as possible!\', \'error\');</script>';
-    }
-
-
   }
 
 }

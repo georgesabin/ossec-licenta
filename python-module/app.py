@@ -36,6 +36,31 @@ def unauthorized():
 # Instantiate MySQL
 mysql = MySQL(app)
 
+# Start/stop/restart ossec
+@app.route('/server/<string:cmd_type>', methods=['GET'])
+@auth.login_required
+def server(cmd_type = None):
+	if cmd_type is None:
+		return make_response(jsonify({
+			'response': 'Bad Request',
+			'status_code': 400
+		}), 400)
+		
+	message = ''
+	if cmd_type == 'start':
+		subprocess.check_output('/var/ossec/bin/ossec-control start', shell=True)
+		message = 'The OSSEC server was started!'
+	elif cmd_type == 'stop':
+		subprocess.check_output('/var/ossec/bin/ossec-control stop', shell=True)
+		message = 'The OSSEC server was stoped!'		
+	elif cmd_type == 'restart':
+		subprocess.check_output('/var/ossec/bin/ossec-control restart', shell=True)
+		message = 'The OSSEC server was restarted!'		
+	
+	return make_response(jsonify({
+		'response': message
+	}), 200)
+
 # Add agent route
 @app.route('/agent/add', methods=['POST'])
 @auth.login_required
@@ -166,6 +191,46 @@ def remove_agent(agent_id = None):
 
 	return make_response(jsonify({
 		'response': 'Agent ' + agent_id + ' removed.' 
+	}), 200)
+
+@app.route('/agent/importKey/<string:agent_key>', methods=['POST'])
+@auth.login_required
+def import_key(agent_id = None):
+	if agent_id is None:
+		return make_response(jsonify({
+			'response': 'Bad Request',
+			'status_code': 400
+		}), 400)
+
+	smartMonitoring = mysql.connection.cursor()
+	smartMonitoring.execute('SELECT')
+
+# Get ossec.conf
+@app.route('/server/confFile', methods=['GET'])
+@auth.login_required
+def conf_file():
+	result = subprocess.check_output('cat /var/ossec/etc/ossec.conf', shell=True)
+	return make_response(jsonify({
+		'response': result,
+		'status_code': 200
+	}), 200)
+
+# Replace ossec.conf
+@app.route('/server/replaceConfFile', methods=['POST'])
+@auth.login_required
+def replace_conf_file():
+	if not request.json or 'server_conf' is None or not 'server_conf' in request.json:
+		return jsonify({
+			'status_code': 400,
+			'response': 'Bad Request'
+		}), 400
+	# Add new settings in ossec.conf file
+	with open('/var/ossec/etc/ossec.conf', 'w') as myFile:
+		myFile.write(request.json['server_conf'])
+	# Restart the ossec server
+	subprocess.check_output('/var/ossec/bin/ossec-control restart', shell=True)
+	return make_response(jsonify({
+		'status_code': 200
 	}), 200)
 
 @app.route('/')

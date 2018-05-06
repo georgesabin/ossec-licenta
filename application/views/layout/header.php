@@ -71,7 +71,16 @@ $menuItems = [
     'menu_text_short'   => 'A',
     'menu_icon'         => 'fa fa-users',
     'menu_has_childs'   => false
-  ]
+  ],
+  [
+    'menu_controller'   => 'settings',
+    'menu_method'       => 'index',
+    'menu_name'         => ['settings/index'],
+    'menu_text'         => 'Settings',
+    'menu_text_short'   => 'S',
+    'menu_icon'         => 'fa fa-cog',
+    'menu_has_childs'   => false
+  ],
   // [
   //   'menu_controller'   => '',
   //   'menu_method'       => '',
@@ -224,6 +233,15 @@ $menuItems = [
                   </div>
                   <div class="collapse navbar-collapse">
                     <ul class="nav navbar-nav navbar-right">
+                      <li>
+                        <button class="btn btn-default btn-xs" onclick="serverAction('start');">Start Ossec</button> 
+                      </li>
+                      <li>
+                        <button class="btn btn-default btn-xs" onclick="serverAction('restart');">Restart Ossec</button> 
+                      </li>
+                      <li>
+                        <button class="btn btn-default btn-xs" onclick="serverAction('stop');">Stop Ossec</button> 
+                      </li>
                       <li>
                         <a href="<?= $this->config->item('base_url'); ?>app/my_profile">
                           <i class="fa fa-user"></i>

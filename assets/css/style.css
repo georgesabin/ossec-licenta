@@ -420,3 +420,6 @@ h5, .h5 {
 .table-filter label:before {
   display: none;
 }
+.navbar-right .btn {
+  margin: 26px 5px;
+}

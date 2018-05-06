@@ -8,7 +8,11 @@ $this->load->view(
     'requireJs'         => ['libs/bootstrap-switch.min.js', 'pages/settings.js'],
     'requireCSS'        => ['libs/bootstrap-switch.min.css', 'pages/settings.css']
   ]
-); ?>
+); 
+
+// echo '<pre>' . print_r($confFile, true) . '</pre>';
+
+?>
 <div id="saveGeneral"></div>
 <div class="row saveGeneral">
   <div class="col-md-12">
@@ -82,47 +86,30 @@ $this->load->view(
     </div>
   </div>
 </div>
-<div id="saveDeveloper"></div>
+<div id="saveOssecConf"></div>
 <div class="row">
   <div class="col-md-12">
     <div class="card">
       <div class="card-header">
-        <h4 class="card-title">Developer</h4>
+        <h4 class="card-title">Ossec Conf</h4>
       </div>
       <div class="clearfix"></div>
       <div class="card-content">
-        <form method="POST" action="<?= $this->config->item('base_url');?>settings/saveDeveloperSettings" id="saveDeveloperSettingsAction">
+        <form method="POST" action="<?= $this->config->item('base_url');?>settings/saveOssecConf" id="saveOssecConfAction">
           <input type="hidden" class="formToken" name="<?= $this->security->get_csrf_token_name(); ?>" value="<?= $this->security->get_csrf_hash(); ?>">
-          <div id="saveDeveloperSettingsLoader" class="blockLoader"><div class="spinner"><div class="rect1"></div><div class="rect2"></div><div class="rect3"></div><div class="rect4"></div><div class="rect5"></div></div></div>
+          <div id="saveOssecConfLoader" class="blockLoader"><div class="spinner"><div class="rect1"></div><div class="rect2"></div><div class="rect3"></div><div class="rect4"></div><div class="rect5"></div></div></div>
           <div class="row">
             <div class="col-md-4 col-lg-3 col-xl-2">
-              <h5 class="title">Sentry</h5>
-              <small>DSN for sentry's library ( <i>sentry is used to log errors JS / PHP</i> ). This is recommended to be ON allowing the errors to be sent to the developing team. </small>
+              <h5 class="title">ossec.conf</h5>
             </div>
-            <div class="col-md-1 col-lg-1 col-xl-1">
-              <label>Status</label><br>
-              <input type="checkbox" class="form-control status-switch" name="application_sentry_status" <?= (isset($settings) && isset($settings['application_sentry_status']['setting_code']) && $settings['application_sentry_status']['setting_code'] == 'application_sentry_status' && $settings['application_sentry_status']['setting_value'] == 'on') ? 'checked' : ''; ?> data-size="sm" data-off-color="danger" data-on-color="success" data-on-text="ON" data-off-text="OFF" >
-              <span class="label_error">&nbsp;</span>
-            </div>
-            <div class="col-md-7 col-lg-8 col-xl-9 no-padding">
-              <div class="row">
-                <div class="col-xs-6">
-                  <label>DSN</label>
-                  <input type="text" class="form-control dsn-setting <?= isset($settings) && isset($settings['application_sentry_status']['setting_code']) && $settings['application_sentry_status']['setting_value'] != 'on' ? 'disabled' : ''; ?>" name="application_sentry_dsn" placeholder="https://..." value="<?= (isset($settings) && isset($settings['application_sentry_dsn']['setting_value']) && $settings['application_sentry_dsn']['setting_code'] == 'application_sentry_dsn') ? $settings['application_sentry_dsn']['setting_value'] : ''; ?>">
-                  <span class="label_error">&nbsp;</span>
-                </div>
-                <div class="col-xs-6">
-                    <label>DSN (Public)</label>
-                    <input type="text" class="form-control dsn-public-setting <?= isset($settings) && isset($settings['application_sentry_status']['setting_code']) && $settings['application_sentry_status']['setting_value'] != 'on' ? 'disabled' : ''; ?>" name="application_sentry_dsn_public" placeholder="https://..." value="<?= (isset($settings) && isset($settings['application_sentry_dsn_public']['setting_value']) && $settings['application_sentry_dsn_public']['setting_code'] == 'application_sentry_dsn_public') ? $settings['application_sentry_dsn_public']['setting_value'] : ''; ?>">
-                    <span class="label_error">&nbsp;</span>
-                </div>
-              </div>
+            <div class="col-md-8 col-lg-9 col-xl-10">
+              <textarea class="form-control" rows="50" name="ossec_conf_file"><?php echo $confFile; ?></textarea>
             </div>
           </div>
         </form>
         <div class="row">
           <div class="col-xs-12">
-            <button type="button" class="btn btn-success pull-right" onclick="submit_form('#saveDeveloperSettingsAction', '#saveGeneral', 'confirmation', false, {});"><i class="fa fa-save"></i> Save</button>
+            <button type="button" class="btn btn-success pull-right" onclick="submit_form('#saveOssecConfAction', '#saveOssecConf', 'confirmation', false, {});"><i class="fa fa-save"></i> Save</button>
           </div>
         </div>
       </div>

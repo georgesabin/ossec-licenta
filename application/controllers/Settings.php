@@ -24,11 +24,26 @@ class Settings extends App_Controller {
       $currentSettingCode[$value->setting_code] = (array)$currentSettings[$key];
     }
 
+    // Get the content from ossec.conf file via python-module
+    $url = $this->serverIP . 'server/confFile';
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, $url);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type:application/json']);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_USERPWD, "$this->username:$this->password");
+    curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
+    $confFile = curl_exec($ch);
+    $info = curl_getinfo($ch);
+    $error = curl_error($ch);
+    curl_close($ch);
+    $confFileObj = json_decode($confFile);
+
     // Load the settings view
     $this->load->view(
       'settings/index',
       [
-        'settings' => $currentSettingCode
+        'settings' => $currentSettingCode,
+        'confFile' => $confFileObj->response
       ]
     );
 
@@ -126,6 +141,30 @@ class Settings extends App_Controller {
        $this->settings_model->updateSettings($value, ['setting_value' => $settingsData[$value], 'setting_changed_date' => date('Y-m-d h:m:s'), 'setting_changed_by' => $this->session->userId, 'setting_changed_audit_id' => $auditId]);
      }
    }
+
+  }
+
+  public function saveOssecConf() {
+
+    // echo str_replace('"', '', json_encode($this->input->post('ossec_conf_file')));
+    // exit;
+    $url = $this->serverIP . 'server/replaceConfFile';
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, $url);
+    curl_setopt($ch, CURLOPT_POST, 1);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode([
+        // 'server_conf'    => str_replace('"', '', json_encode($this->input->post('ossec_conf_file'))),
+        'server_conf'    => $this->input->post('ossec_conf_file'),
+    ]));
+    curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type:application/json']);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_USERPWD, "$this->username:$this->password");
+    curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
+    $result = curl_exec($ch);
+    $info = curl_getinfo($ch);
+    $error = curl_error($ch);
+    curl_close($ch);
+    echo $result;
 
   }
 
