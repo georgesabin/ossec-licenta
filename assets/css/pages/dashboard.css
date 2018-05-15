@@ -30,3 +30,26 @@
 .select2-container--default .select2-results__option--highlighted[aria-selected] {
   background-color: #eb5e28;
 }
+#ossec-logs {
+  max-height: 650px;
+  overflow: scroll;
+  font-size: 18px;
+}
+#ossec-logs p {
+}
+.log-color {
+  padding: 10px;
+  background-color: red;
+  color: #fff;
+  transition:background-color 0.5s ease;
+}
+.log-color-toggle {
+  padding: 10px;
+  color: #fff;
+  background:#EB5E28;
+}
+.log-color-remove {
+  padding: 0;
+  color: #000;
+  background: transparent;
+}

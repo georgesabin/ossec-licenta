@@ -233,6 +233,16 @@ def replace_conf_file():
 		'status_code': 200
 	}), 200)
 
+# Get ossec.log file
+@app.route('/server/ossecLog', methods=['GET'])
+@auth.login_required
+def ossec_log():
+	result = subprocess.check_output('cat /var/ossec/logs/ossec.log', shell=True)
+	return make_response(jsonify({
+		'response': result,
+		'status_code': 200
+	}), 200)
+
 @app.route('/')
 def index():
     return "Python Module"

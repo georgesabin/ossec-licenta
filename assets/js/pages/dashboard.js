@@ -1,5 +1,7 @@
-var current_calls, calls_traffic, trafficTable;
+var current_calls, calls_traffic, trafficTable, currentLogs = [], interval;
 $(document).ready(function() {
+
+  $('#logs-time').select2();
 
   // updateCharts();
   // updateServerInfo();
@@ -66,18 +68,93 @@ $('*[data-name="disk_used_bar"]').removeClass('progress-bar-success').removeClas
 if (typeof(EventSource) !== 'undefined') {
 
   var source = new EventSource(baseURL + 'dashboard/ossecLogs');
+
   source.addEventListener('open', function(e) {
+
     console.info('Connection was opened.');
+
   }, false);
 
   source.addEventListener('message', function(e) {
+
     data = JSON.parse(e.data)
 
     for (var i = data.length; i > 0; i--) {
-      // console.log(data[i]);
-      document.getElementById('ossec-logs').innerHTML += data[i] + '<br>';
+
+      currentLogs.push(data[i]);
+
+      if (data[i] != undefined) {
+
+        $('#ossec-logs').prepend('<p>' + data[i] + '</p>');
+
+      }
+
     }
-    document.getElementById('ossec-logs').innerHTML = '';
+
+    source.close();
+
   }, false);
+
+  function sseOssecLogs(logsTime = 5000) {
+
+    logsTime = parseInt(logsTime);
+    console.log(typeof logsTime);
+
+    setInterval(function() {
+
+      var source = new EventSource(baseURL + 'dashboard/ossecLogs');
+  
+      source.addEventListener('open', function(e) {
+  
+        console.info('Connection was opened.');
+  
+      }, false);
+  
+      source.addEventListener('message', function(e) {
+  
+        data = JSON.parse(e.data)
+  
+        for (var i = data.length; i > 0; i--) {
+  
+          if (jQuery.inArray(data[i], currentLogs) == -1) {
+  
+            currentLogs.push(data[i]);
+            $('#ossec-logs').prepend('<p class="log-color">' + data[i] + '<p>');
+  
+          }
+  
+        }
+  
+        source.close();
+  
+        
+      }, false);
+      
+    }, logsTime);
+
+  }
+
+  sseOssecLogs();
+  
+  
+  $(document).ready(function() {
+
+    interval = setInterval(function() {
+      $('.log-color').toggleClass('log-color-toggle');
+    }, 1000);
+
+    $('#logs-time').change(function() {
+      if ($(this).val() != '') {
+        sseOssecLogs($(this).val());
+      }
+    });
+
+    $('#ossec-logs').mouseenter(function() {
+      clearInterval(interval);
+      $('.log-color').addClass('log-color-remove').removeClass('log-color log-color-toggle');
+    });
+
+  });
+
 
 }
