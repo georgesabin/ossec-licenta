@@ -10,8 +10,6 @@ $this->load->view(
   ]
 ); 
 
-// echo '<pre>' . print_r($confFile, true) . '</pre>';
-
 ?>
 <div id="saveGeneral"></div>
 <div class="row saveGeneral">
@@ -109,60 +107,12 @@ $this->load->view(
         </form>
         <div class="row">
           <div class="col-xs-12">
-            <button type="button" class="btn btn-success pull-right" onclick="submit_form('#saveOssecConfAction', '#saveOssecConf', 'confirmation', false, {});"><i class="fa fa-save"></i> Save</button>
+            <button type="button" class="btn btn-success pull-right" onclick="submit_form('#saveOssecConfAction', '#saveOssecConf', 'confirmation', function (data) { $('#generalModal .modal-body').html(JSON.parse(data).error); $('#generalModal').modal('show');  }, {});"><i class="fa fa-save"></i> Save</button>
           </div>
         </div>
       </div>
     </div>
   </div>
 </div>
-<!-- <div id="saveAsterisk"></div>
-<div class="row">
-  <div class="col-md-12">
-    <div class="card" id="cardAsterisk">
-      <div class="card-header">
-        <h4 class="card-title">Asterisk</h4>
-        <small>This action will by applied on the asterisk server, syntax errors or wrong logic will might cause problems with the calls.</small>
-      </div>
-      <div class="clearfix"></div>
-      <div class="card-content">
-        <div id="saveAsteriskSettingsOutput">
-
-        </div>
-        <form method="POST" action="<?= $this->config->item('base_url');?>settings/saveAsteriskSettings" id="saveAsteriskSettingsAction">
-          <input type="hidden" class="formToken" name="<?= $this->security->get_csrf_token_name(); ?>" value="<?= $this->security->get_csrf_hash(); ?>">
-          <div id="saveAsteriskSettingsLoader" class="blockLoader"><div class="spinner"><div class="rect1"></div><div class="rect2"></div><div class="rect3"></div><div class="rect4"></div><div class="rect5"></div></div></div>
-          <div class="row">
-            <div class="col-md-4 col-lg-3 col-xl-2">
-              <h5 class="title">sip.conf</h5>
-              <small>This is the sip.conf ( <i>usually in /etc/asterisk/sip.conf</i> ) file. </small>
-            </div>
-            <div class="col-md-8 col-lg-9 col-xl-10">
-              <label>SIP</label>
-              <textarea class="form-control" id="sip" rows="10" name="asterisk_conf_sip"><?= (isset($settings) && isset($settings['asterisk_conf_sip']['setting_code']) && $settings['asterisk_conf_sip']['setting_code'] == 'asterisk_conf_sip') ? $settings['asterisk_conf_sip']['setting_value'] : ''; ?></textarea>
-              <span class="label_error">&nbsp;</span>
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-md-4 col-lg-3 col-xl-2">
-              <h5 class="title">extensions.conf</h5>
-              <small>This is the extensions.conf ( <i>usually in /etc/asterisk/extensions.conf</i> ) file. </small>
-            </div>
-            <div class="col-md-8 col-lg-9 col-xl-10">
-              <label>Extensions </label>
-              <textarea class="form-control" id="extensions" rows="10" name="asterisk_conf_extensions"><?= (isset($settings) && isset($settings['asterisk_conf_extensions']['setting_code']) && $settings['asterisk_conf_extensions']['setting_code'] == 'asterisk_conf_extensions') ? $settings['asterisk_conf_extensions']['setting_value'] : ''; ?></textarea>
-              <span class="label_error">&nbsp;</span>
-            </div>
-          </div>
-        </form>
-        <div class="row">
-          <div class="col-xs-12">
-            <button type="button" class="btn btn-danger pull-right" onclick="settingPasswordVerification('#saveAsteriskSettingsAction', 'modal_container_3', {});"><i class="fa fa-exclamation-triangle" aria-hidden="true"></i> Save</button>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div> -->
 
 <?php $this->load->view('layout/footer'); ?>

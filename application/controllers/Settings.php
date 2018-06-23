@@ -8,7 +8,6 @@ class Settings extends App_Controller {
     parent::__construct();
     $this->load->model('settings_model');
     $this->load->model('users_model');
-    $this->load->model('audit_model');
 
   }
 
@@ -119,7 +118,7 @@ class Settings extends App_Controller {
       'logo_removed'              => $this->input->post('logo_removed')
     ];
 
-    // If the user uploaded the logo, insert file name into table else check if the logo is BSS ONE remove file name from table
+    // If the user uploaded the logo, insert file name into table else check if the logo is default remove file name from table
     if (isset($settingsData['logo_removed']) && $settingsData['logo_removed'] === 'Removed Logo') {
       $settingsData['application_logo'] = '';
     } else if(isset($uploadLogo->data->file_name)) {
@@ -129,18 +128,17 @@ class Settings extends App_Controller {
     }
 
     foreach ($settings as $key => $value) {
-     if (isset($settingsData[$value]) && $currentSettingCode[$value]['setting_value'] != $settingsData[$value]) {
-       // Get audit id
-       $auditId = $this->audit_model->log([
-         'log_action'             => 'setting.update',
-         'log_user_id'            => $this->session->userId,
-         'log_target_entity_type' => 'setting',
-         'log_target_entity_id'   => $currentSettingCode[$value]['setting_id'],
-         'log_value'              => json_encode((object)['before' => [$value => $currentSetting[$value]], 'after' => [$value => $settingsData[$value]]])
-       ]);
-       $this->settings_model->updateSettings($value, ['setting_value' => $settingsData[$value], 'setting_changed_date' => date('Y-m-d h:m:s'), 'setting_changed_by' => $this->session->userId, 'setting_changed_audit_id' => $auditId]);
-     }
-   }
+      if (isset($settingsData[$value]) && $currentSettingCode[$value]['setting_value'] != $settingsData[$value]) {
+        $this->settings_model->updateSettings(
+          $value,
+          [
+            'setting_value' => $settingsData[$value],
+            'setting_changed_date' => date('Y-m-d h:m:s'),
+            'setting_changed_by' => $this->session->userId
+          ]
+        );
+      }
+    }
 
   }
 
@@ -167,77 +165,5 @@ class Settings extends App_Controller {
     echo $result;
 
   }
-
-  /**
-  *	Save Developer Settings
-  **/
-  public function saveDeveloperSettings() {
-
-    $settings = ['application_sentry_status','application_sentry_dsn','application_sentry_dsn_public'];
-
-    // Form validation
-    $this->load->library('form_validation');
-
-    // Define rules
-    $formValidationRules = [
-      [
-        'field' => 'application_sentry_dsn',
-        'rules' => 'trim',
-        'label' => 'DSN'
-      ],
-      [
-        'field' => 'application_sentry_dsn_public',
-        'rules' => 'trim',
-        'label' => 'DSN (Public)'
-      ]
-    ];
-
-    // Set the rules
-    $this->form_validation->set_rules($formValidationRules);
-
-    // Validate the form
-    if($this->form_validation->run() === false) {
-      echo json_encode(['has_errors' => true, 'errors' => $this->form_validation->error_array()]);
-      exit;
-    }
-
-    // Get all settings
-    $currentSettings = $this->settings_model->getSettings();
-
-    // Array with codes
-    $currentSettingCode = [];
-
-    foreach ($currentSettings as $key => $value) {
-      $currentSettingCode[$value->setting_code] = (array)$currentSettings[$key];
-    }
-
-    $currentSetting = [];
-
-    foreach ($settings as $key => $value) {
-      $currentSetting[$value] = $currentSettingCode[$value]['setting_value'];
-    }
-
-    // Create array with the dates
-    $settingsData = [
-      'application_sentry_status'     => $this->input->post('application_sentry_status') == null ? 'off' : $this->input->post('application_sentry_status'),
-      'application_sentry_dsn'        => $this->input->post('application_sentry_dsn'),
-      'application_sentry_dsn_public' => $this->input->post('application_sentry_dsn_public')
-    ];
-
-    foreach ($settings as $key => $value) {
-      if (isset($settingsData[$value]) && $currentSettingCode[$value]['setting_value'] != $settingsData[$value]) {
-        // Get audit id
-        $auditId = $this->audit_model->log([
-          'log_action'             => 'setting.update',
-          'log_user_id'            => $this->session->userId,
-          'log_target_entity_type' => 'setting',
-          'log_target_entity_id'   => $currentSettingCode[$value]['setting_id'],
-          'log_value'              => json_encode((object)['before' => [$value => $currentSetting[$value]], 'after' => [$value => $settingsData[$value]]])
-        ]);
-        $this->settings_model->updateSettings($value, ['setting_value' => $settingsData[$value], 'setting_changed_date' => date('Y-m-d h:m:s'), 'setting_changed_by' => $this->session->userId, 'setting_changed_audit_id' => $auditId]);
-      }
-    }
-
-  }
-
+  
 }

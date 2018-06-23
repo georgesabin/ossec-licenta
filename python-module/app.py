@@ -11,6 +11,7 @@ import time
 from flask import Flask, request, session, g, redirect, url_for, abort, render_template, flash, jsonify, make_response
 from flask_mysqldb import MySQL
 from flask_httpauth import HTTPBasicAuth
+import os
 
 app = Flask(__name__)
 
@@ -48,17 +49,67 @@ def server(cmd_type = None):
 		
 	message = ''
 	if cmd_type == 'start':
-		subprocess.check_output('/var/ossec/bin/ossec-control start', shell=True)
+		subprocess.check_output('sudo /var/ossec/bin/ossec-control start', shell=True)
 		message = 'The OSSEC server was started!'
 	elif cmd_type == 'stop':
-		subprocess.check_output('/var/ossec/bin/ossec-control stop', shell=True)
+		subprocess.check_output('sudo /var/ossec/bin/ossec-control stop', shell=True)
 		message = 'The OSSEC server was stoped!'		
 	elif cmd_type == 'restart':
-		subprocess.check_output('/var/ossec/bin/ossec-control restart', shell=True)
+		subprocess.check_output('sudo /var/ossec/bin/ossec-control restart', shell=True)
 		message = 'The OSSEC server was restarted!'		
 	
 	return make_response(jsonify({
 		'response': message
+	}), 200)
+
+# Get ossec.conf
+@app.route('/server/confFile', methods=['GET'])
+@auth.login_required
+def conf_file():
+	result = subprocess.check_output('sudo cat /var/ossec/etc/ossec.conf', shell=True)
+	return make_response(jsonify({
+		'response': result,
+		'status_code': 200
+	}), 200)
+
+# Replace ossec.conf
+@app.route('/server/replaceConfFile', methods=['POST'])
+@auth.login_required
+def replace_conf_file():
+	if not request.json or 'server_conf' is None or not 'server_conf' in request.json:
+		return jsonify({
+			'status_code': 400,
+			'response': 'Bad Request'
+		}), 400
+
+	# Add new settings in ossec.conf file
+	echoConf = subprocess.Popen(['echo', request.json['server_conf']], stdout=subprocess.PIPE)
+	subprocess.check_output(('sudo', 'tee', '/var/ossec/etc/ossec.conf'), stdin=echoConf.stdout)
+	# Wait for child process to terminate
+	echoConf.wait()
+
+	# Restart the ossec server
+	try:
+		subprocess.check_output('sudo /var/ossec/bin/ossec-control restart', shell=True)
+	except subprocess.CalledProcessError as e:
+		print(e.output)
+		return make_response(jsonify({
+			'status_code': 404,
+			'error': e.output
+		}), 200)
+
+	return make_response(jsonify({
+		'status_code': 200 
+	}), 200)
+
+# Get ossec.log file
+@app.route('/server/ossecLog', methods=['GET'])
+@auth.login_required
+def ossec_log():
+	result = subprocess.check_output('sudo cat /var/ossec/logs/ossec.log', shell=True)
+	return make_response(jsonify({
+		'response': result,
+		'status_code': 200
 	}), 200)
 
 # Add agent route
@@ -155,6 +206,7 @@ def get_key_agent(agent_id = None):
 		'response': key
 	}), 200)
 
+# Remove agent
 @app.route('/agent/remove/<string:agent_id>', methods=['DELETE'])
 @auth.login_required
 def remove_agent(agent_id = None):
@@ -193,54 +245,65 @@ def remove_agent(agent_id = None):
 		'response': 'Agent ' + agent_id + ' removed.' 
 	}), 200)
 
-@app.route('/agent/importKey/<string:agent_key>', methods=['POST'])
+# Restart agent
+@app.route('/agent/restart/<string:agent_id>', methods=['GET'])
 @auth.login_required
-def import_key(agent_id = None):
+def restart_agent(agent_id = None):
 	if agent_id is None:
 		return make_response(jsonify({
 			'response': 'Bad Request',
 			'status_code': 400
 		}), 400)
+	# Restared agent
+	subprocess.check_output('sudo /var/ossec/bin/agent_control -R ' + agent_id, shell=True)
 
-	smartMonitoring = mysql.connection.cursor()
-	smartMonitoring.execute('SELECT')
-
-# Get ossec.conf
-@app.route('/server/confFile', methods=['GET'])
-@auth.login_required
-def conf_file():
-	result = subprocess.check_output('cat /var/ossec/etc/ossec.conf', shell=True)
 	return make_response(jsonify({
-		'response': result,
-		'status_code': 200
+		'response': 'The agent is restarted successfully!'
 	}), 200)
 
-# Replace ossec.conf
-@app.route('/server/replaceConfFile', methods=['POST'])
+# Get config for an agent
+@app.route('/agent/get/config/<string:agent_id>/<string:agent_name>', methods=['GET'])
 @auth.login_required
-def replace_conf_file():
-	if not request.json or 'server_conf' is None or not 'server_conf' in request.json:
+def agent_get_config(agent_id = None, agent_name = None):
+	if agent_id is None or agent_name is None:
+		return make_response(jsonify({
+			'response': 'Bad Request',
+			'status_code': 400
+		}), 400)
+
+	result = ''
+
+	if os.path.exists('/var/www/html/files/config-files-agents/agent_' + agent_id + '_' + agent_name + '.conf') is True:
+		result = subprocess.check_output('cat /var/www/html/files/config-files-agents/agent_' + agent_id + '_' + agent_name + '.conf', shell=True)
+	print(result)
+	return make_response(jsonify({
+		'response': result
+	}), 200)
+
+# Create config file for an agent
+@app.route('/agent/create/config', methods=['POST'])
+@auth.login_required
+def agent_create_config():
+	if not request.json or not 'agent_id' in request.json or not 'agent_name' in request.json or not 'agent_conf' in request.json:
 		return jsonify({
 			'status_code': 400,
 			'response': 'Bad Request'
 		}), 400
-	# Add new settings in ossec.conf file
-	with open('/var/ossec/etc/ossec.conf', 'w') as myFile:
-		myFile.write(request.json['server_conf'])
-	# Restart the ossec server
-	subprocess.check_output('/var/ossec/bin/ossec-control restart', shell=True)
-	return make_response(jsonify({
-		'status_code': 200
-	}), 200)
 
-# Get ossec.log file
-@app.route('/server/ossecLog', methods=['GET'])
-@auth.login_required
-def ossec_log():
-	result = subprocess.check_output('cat /var/ossec/logs/ossec.log', shell=True)
+	# Add new settings in ossec.conf file
+	with open('/var/www/html/files/config-files-agents/agent_' + request.json['agent_id'] + '_' + request.json['agent_name'] + '.conf', 'w+') as myFile:
+		myFile.write(request.json['agent_conf'])
+
+	catAllConfs = subprocess.Popen('cat /var/www/html/files/config-files-agents/*', shell=True, stdout=subprocess.PIPE)
+	subprocess.check_output(('sudo', 'tee', '/var/ossec/etc/shared/agent.conf'), stdin=catAllConfs.stdout)
+	# Wait for child process to terminate
+	catAllConfs.wait()
+
+	# Restart OSSEC for changes to take effect
+	subprocess.check_output('sudo /var/ossec/bin/ossec-control restart', shell=True)
+	
 	return make_response(jsonify({
-		'response': result,
-		'status_code': 200
+		'response': 'The file is created!'
 	}), 200)
 
 @app.route('/')

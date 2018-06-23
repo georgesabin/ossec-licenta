@@ -453,7 +453,7 @@ $config['csrf_token_name'] = 'token';
 $config['csrf_cookie_name'] = 'token';
 $config['csrf_expire'] = 7200;
 $config['csrf_regenerate'] = TRUE;
-$config['csrf_exclude_uris'] = ['cli/gitHook'];
+//$config['csrf_exclude_uris'] = ['cli/gitHook'];
 
 /*
 |--------------------------------------------------------------------------

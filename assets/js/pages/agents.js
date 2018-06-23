@@ -25,19 +25,14 @@ $(document).ready(function() {
             {'data': 'agent_name'},
             {'data': 'agent_ip'},
             {'data': 'agent_date_created'},
+            {'data': 'configFile'},
             {'data': 'action'}
         ],
         columnDefs: [
             {
-                'targets': [5],
+                'targets': [5, 6],
                 'orderable': false
-            },
-            // {
-            //     "render": function (data, type, row) {
-            //         return (data == '1' ? '<i class="fa fa-circle text-success"></i> ON' : '<i class="fa fa-circle text-danger"></i> OFF');
-            //     },
-            //     "targets": 6
-            // }
+            }
         ]
     });
 
@@ -47,7 +42,24 @@ $(document).ready(function() {
 
     });
 
+
 });
+
+function agentConfigFile(agent_id, agent_name) {
+
+    $.ajax({
+        url: baseURL + 'agent/viewAgentConfigFile/' + agent_id + '/' + agent_name,
+        method: 'POST',
+        data: {
+            token: Cookies.get('token')
+        },
+        success: function(data) {
+            $('#modal_container').html(data);
+            $('#modal_container').modal('show');
+        }
+    });
+
+}
 
 function removeAgent(agent_id) {
 
@@ -64,7 +76,7 @@ function removeAgent(agent_id) {
 
 }
 
-function getAgentKey(agent_id){
+function getAgentKey(agent_id) {
 
     $.ajax({
         url: baseURL + 'agent/getAgentKey/' + agent_id,
@@ -73,10 +85,26 @@ function getAgentKey(agent_id){
             token: Cookies.get('token')
         },
         success: function(data) {
-            console.log(data);
             data = JSON.parse(data);
-            $('#keyAgent').modal('show');
-            $('#keyAgent .modal-body').html('<h4>' + data.response + '</h4>');
+            $('#generalModal .modal-body').html('<h4>' + data.response + '</h4>');
+            $('#generalModal').modal('show');
+        }
+    });
+
+}
+
+function restartAgent(agent_id) {
+
+    $.ajax({
+        url: baseURL + 'agent/restartAgent/' + agent_id,
+        method: 'POST',
+        data: {
+            token: Cookies.get('token')
+        },
+        success: function(data) {
+            data = JSON.parse(data);
+            $('#generalModal .modal-body').html('<h4>' + data.response + '</h4>');
+            $('#generalModal').modal('show');
         }
     });
 

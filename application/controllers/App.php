@@ -34,8 +34,7 @@ class App extends App_Controller {
       'app/my_profile',
       [
         'dates' => $this->users_model->getUserById($this->session->userId),
-        'actionsUser' => (object)$userData,
-        'latestActivity' => $this->users_model->getLatestActivity($this->session->userId)
+        'actionsUser' => (object)$userData
       ]
     );
 
@@ -132,20 +131,9 @@ class App extends App_Controller {
       $updateData['user_password'] = $data['password'];
     }
 
-    // If there is anything to update, make the audit and update the user
+    // If there is anything to update
     if(count($updateData) > 0) {
 
-      // Get audit id
-      $auditId = $this->audit_model->log([
-        'log_action'              => 'profile.update',
-        'log_user_id'             => $this->session->userId,
-        'log_target_entity_type'  => 'user',
-        'log_target_entity_id'    => $this->session->userId,
-        'log_value'               => json_encode((object)['before' => $beforeData, 'after' => $data])
-      ]);
-
-      // Add the audit id and date to updateData
-      $updateData['user_last_change_audit_id']  = $auditId;
       $updateData['user_last_change_date']      = date('Y-m-d H:i:s');
       $this->users_model->updateUser($userId, $updateData);
 
@@ -188,14 +176,6 @@ class App extends App_Controller {
       $checkUserPassword = $this->users_model->checkPassword($this->input->post('user_name'), sha1($this->config->item('encryption_key').$this->input->post('user_password')));
       $getUser = $this->users_model->getUserById($checkUserPassword);
 
-      // Log the action
-      $this->audit_model->log([
-        'log_action'              => 'user.login',
-        'log_target_entity_type'  => 'user',
-        'log_target_entity_id'    => $checkUserPassword,
-        'log_value'               => $checkUserPassword === false ? '{"result":false, "user_name":"'.$this->input->post('user_name').'"}' : '{"result":true, "user_name":"'.$this->input->post('user_name').'"}'
-      ]);
-
       if($checkUserPassword === false) {
         echo '{"has_errors":true,"errors":{"user_name":"User might be incorrect or the account is disabled.", "user_password":"Password might be incorrect"}}';
         return;
@@ -220,14 +200,6 @@ class App extends App_Controller {
 
     // Check if the user is logged in with an account and remove the data from the session
     if($this->session->sessionKey != null) {
-
-      // Log the action
-      $this->audit_model->log([
-        'log_action'            => 'user.logout',
-        'log_user_id'           => $this->session->userId,
-        'log_target_entity_type'=> 'user',
-        'log_target_entity_id'  => $this->session->userId
-      ]);
 
       $this->users_model->destroySession($this->session->sessionKey);
       $this->session->sessionKey  = null;

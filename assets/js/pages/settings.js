@@ -2,14 +2,12 @@
 $(document).ready(function() {
 
   showLoader($('#saveGeneralSettingsLoader'));
-  showLoader($('#saveDeveloperSettingsLoader'));
-  showLoader($('#saveAsteriskSettingsLoader'));
+  showLoader($('#saveOssecConfLoader'));
 
   $(window).on('load', function() {
 
     hideLoader($('#saveGeneralSettingsLoader'));
-    hideLoader($('#saveDeveloperSettingsLoader'));
-    hideLoader($('#saveAsteriskSettingsLoader'));
+    hideLoader($('#saveOssecConfLoader'));
 
   }).trigger('load');
 
@@ -21,20 +19,6 @@ $(document).ready(function() {
       $('.url-settings').addClass('disabled');
     }else{
       $('.url-settings').removeClass('disabled');
-    }
-
-  });
-
-  $('.status-switch').bootstrapSwitch({size: 'large', handleWidth: 30, labelWidth: 5});
-
-  $('.status-switch').on('switchChange.bootstrapSwitch', function(event, state) {
-
-    if(state == true) {
-      $('.dsn-setting').removeClass('disabled');
-      $('.dsn-public-setting').removeClass('disabled');
-    }else{
-      $('.dsn-setting').addClass('disabled');
-      $('.dsn-public-setting').addClass('disabled');
     }
 
   });

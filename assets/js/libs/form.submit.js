@@ -32,7 +32,7 @@ function submit_form(form_selector, target, confirmation, callback, notification
           },
           target: target,
           success: function(data) {
-            if(callback) { eval(callback + "(data)"); }
+            if(typeof callback !== 'undefined' && callback !== false) { callback(data); }
           }
         });
         hideLoader($(form_selector+'Loader'));

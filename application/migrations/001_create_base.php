@@ -4,46 +4,7 @@ class Migration_create_base extends CI_Migration {
 
   public function up() {
 
-    ## Create Table audit
-    $this->dbforge->add_field([
-      'log_id' => [
-        'type'           => 'int',
-        'constraint'     => '11',
-        'unsigned'       => true,
-        'auto_increment' => true
-      ],
-      'log_action' => [
-        'type'       => 'varchar',
-        'constraint' => '255'
-      ],
-      'log_date' => [
-        'type' => 'datetime',
-      ],
-      'log_user_id' => [
-        'type'       => 'int',
-        'constraint' => '11',
-        'default'    => 0
-      ],
-      'log_target_entity_type' => [
-        'type' => 'enum("rule_inbound","rule_outbound","did","user","none")',
-      ],
-      'log_target_entity_id' => [
-        'type'       => 'int',
-        'constraint' => '11'
-      ],
-      'log_value' => [
-        'type' => 'text',
-        'null' => true
-      ],
-    ]);
-    $this->dbforge->add_key('log_id', true);
-    $this->dbforge->add_key('log_id');
-    $this->dbforge->add_key('log_action');
-    $this->dbforge->create_table('audit', true);
-    $this->db->query('ALTER TABLE  `' . $this->db->dbprefix . 'audit` ENGINE = InnoDB');
-
     ## Create Table migrations
-    //$this->dbforge->add_field('`version` bigint(20) NOT NULL ');
     $this->dbforge->add_field([
       'version' => [
         'type'       => 'bigint',
@@ -105,11 +66,6 @@ class Migration_create_base extends CI_Migration {
         'null' => true
       ],
       'setting_changed_by' => [
-        'type'       => 'int',
-        'constraint' => '11',
-        'null'       => true
-      ],
-      'setting_changed_audit_id' => [
         'type'       => 'int',
         'constraint' => '11',
         'null'       => true

@@ -126,46 +126,6 @@ class Users_model extends App_Model {
   }
 
   /**
-  * Gets all the users from the database
-  *
-  * @param array data The data from POST
-  *
-  * @return array
-  **/
-  public function getUsers(array $data) {
-    $this->db->select('user_id, user_full_name, user_name, user_role, user_mail, user_created_date, user_status')->from('users');
-    if ($data['user_full_name'] !== '') { $this->db->like('user_full_name', $data['user_full_name'], 'both'); }
-    if ($data['user_name'] !== '') { $this->db->like('user_name', $data['user_name'], 'both'); }
-    if ($data['user_role'] !== '') { $this->db->like('user_role', $data['user_role'], 'both'); }
-    if ($data['user_mail'] !== '') { $this->db->like('user_mail', $data['user_mail'], 'both'); }
-    if (isset($data['user_date_from'])) {
-      $this->db->where('user_created_date >=', $data['user_date_from'] . ' 00:00:00');
-    }
-    if (isset($data['user_date_from'])) {
-      $this->db->where('user_created_date <=', $data['user_date_to'] . ' 23:59:59');
-    }
-    if(isset($data['user_status'])) { $this->db->where('user_status', $data['user_status']); }
-    return $this->db->where('user_removed', 0)->order_by($data['column'], $data['order_type'])->limit($data['length'], $data['start'])->get()->result();
-  }
-
-  /**
-  * Get total of users from the database
-  *
-  * @param array data The data from POST
-  *
-  * @return array
-  **/
-  public function getTotalUsers(array $data) {
-    $this->db->select('count(*) as total')->from('users');
-    if ($data['user_full_name'] !== '') { $this->db->like('user_full_name', $data['user_full_name'], 'both'); }
-    if ($data['user_name'] !== '') { $this->db->like('user_name', $data['user_name'], 'both'); }
-    if ($data['user_role'] !== '') { $this->db->like('user_role', $data['user_role'], 'both'); }
-    if ($data['user_mail'] !== '') { $this->db->like('user_mail', $data['user_mail'], 'both'); }
-    if(isset($data['user_status'])) { $this->db->where('user_status', $data['user_status']); }
-    return $this->db->where('user_removed', 0)->get()->row();
-  }
-
-  /**
   * Update a user ( based on userId ) with the new data
   *
   * @param int userId The id of the user
@@ -200,36 +160,6 @@ class Users_model extends App_Model {
   **/
   public function deleteUser(int $userId) {
     return $this->db->where('user_id', $userId)->delete('users');
-  }
-
-  /**
-  * Get number of logins, rules created and users created
-  * @param int logUserId The id of the user
-  * @return object
-  **/
-  public function getLoginRulesUsers(int $logUserId) {
-
-    return $this->db->select('count(*) as total, log_action')
-    ->from('audit')->where('log_action', 'user.login')
-    ->where('log_value LIKE \'{"result":true%\'')
-    ->or_where('log_action LIKE \'rule.%bound.insert\'')
-    ->or_where('log_action', 'user.insert')
-    ->where('log_user_id', $logUserId)
-    ->group_by('log_action')->get()->result();
-
-  }
-
-  /**
-  * Get latest activity
-  *
-  * @return object
-  **/
-  public function getLatestActivity(int $logUserId) {
-
-    return $this->db->select('log_id, log_action, log_date')
-    ->from('audit')->where('log_user_id', $logUserId)->limit(5)
-    ->order_by('log_id', 'DESC')->get()->result();
-
   }
 
 }

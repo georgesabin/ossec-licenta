@@ -50,31 +50,15 @@ $this->load->view(
               <hr>
               <div class="text-center">
                 <div class="row">
-                  <div class="col-md-4">
+                  <div class="col-md-6">
                     <h5><?= (isset($actionsUser) && isset($actionsUser->{'user.login'})) ? $actionsUser->{'user.login'} : '0'; ?><br><small>Logins</small></h5>
                   </div>
-                  <div class="col-md-4">
-                    <h5><?= (isset($actionsUser) && isset($actionsUser->{'rule.inbound.insert'}) && isset($actionsUser->{'rule.outbound.insert'})) ? ($actionsUser->{'rule.inbound.insert'} + $actionsUser->{'rule.outbound.insert'}) : '0'; ?><br><small>Rules created</small></h5>
-                  </div>
-                  <div class="col-md-4">
+                  <div class="col-md-6">
                     <h5><?= (isset($actionsUser) && isset($actionsUser->{'user.insert'})) ? $actionsUser->{'user.insert'} : '0'; ?><br><small>Users created</small></h5>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
-        </div>
-        <div class="card">
-          <div class="card-header">
-            <h4 class="card-title">Lastest activity</h4>
-          </div>
-          <div class="card-content">
-            <?php if (isset($latestActivity)) {
-               foreach ($latestActivity as $log) { ?>
-                <h5><small><i class="fa fa-info-circle text-success fa-action-help" onclick="js_modal('modal_container', 'audit/log/<?= isset($log->log_id) ? $log->log_id : ''; ?>'); return false;"></i></small> <strong><?= isset($log->log_action) ? $log->log_action : ''; ?></strong> on <small><?= isset($log->log_date) ? $log->log_date : ''; ?></small></h5>
-              <?php
-                }
-              } ?>
           </div>
         </div>
       </div>

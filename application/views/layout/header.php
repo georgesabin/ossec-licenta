@@ -66,7 +66,7 @@ $menuItems = [
   [
     'menu_controller'   => 'agent',
     'menu_method'       => 'index',
-    'menu_name'         => ['agents'],
+    'menu_name'         => ['agents/index'],
     'menu_text'         => 'Agents',
     'menu_text_short'   => 'A',
     'menu_icon'         => 'fa fa-users',
@@ -81,71 +81,6 @@ $menuItems = [
     'menu_icon'         => 'fa fa-cog',
     'menu_has_childs'   => false
   ],
-  // [
-  //   'menu_controller'   => '',
-  //   'menu_method'       => '',
-  //   'menu_name'         => ['rules_inbund', 'rules_outbund'],
-  //   'menu_text'         => 'Rules',
-  //   'menu_text_short'   => 'R',
-  //   'menu_icon'         => 'fa fa-map-signs',
-  //   'menu_has_childs'   => true,
-  //   'menu_childs'       => [
-  //     [
-  //       'menu_controller'   => 'rules',
-  //       'menu_method'       => 'inbound',
-  //       'menu_name'         => ['rules_inbund'],
-  //       'menu_text'         => 'Inbound rules',
-  //       'menu_text_short'   => 'IR',
-  //       'menu_has_childs'   => false
-  //     ],
-  //     [
-  //       'menu_controller'   => 'rules',
-  //       'menu_method'       => 'outbound',
-  //       'menu_name'         => ['rules_outbund'],
-  //       'menu_text'         => 'Outbound rules',
-  //       'menu_text_short'   => 'OR',
-  //       'menu_has_childs'   => false
-  //     ]
-  //   ]
-  // ],
-//  [
-//    'menu_controller'   => '',
-//    'menu_method'       => '',
-//    'menu_name'         => ['audit/index', 'settings/index', 'users/index', 'keys/index'],
-//   'menu_text'         => 'Application',
-//    'menu_text_short'   => 'App',
-//    'menu_icon'         => 'fa fa-server',
-//   'menu_has_childs'   => true,
-//    'menu_childs'       => [
-//      [
-//        'menu_controller'   => 'audit',
-//        'menu_method'       => 'index',
-//        'menu_name'         => ['audit/index'],
-//       'menu_text'         => 'Audit',
-//        'menu_text_short'   => 'A',
-//        'menu_icon'         => 'fa fa-history',
-//        'menu_has_childs'   => false
-//      ],
-//      [
-//        'menu_controller'   => 'settings',
-//        'menu_method'       => 'index',
-//        'menu_name'         => ['settings/index'],
-//        'menu_text'         => 'Settings',
-//        'menu_text_short'   => 'S',
-//        'menu_icon'         => 'fa fa-cog',
-//        'menu_has_childs'   => false
-//      ],
-//      [
-//        'menu_controller'   => 'users',
-//        'menu_method'       => 'index',
-//        'menu_name'         => ['users/index'],
-//        'menu_text'         => 'Users',
-//        'menu_text_short'   => 'U',
-//       'menu_icon'         => 'fa fa-user',
-//        'menu_has_childs'   => false
-//      ]
-//    ]
-//  ]
 ];
 
 ?>
@@ -180,7 +115,7 @@ $menuItems = [
       <div class="sidebar" data-background-color="black" data-active-color="danger">
         <div class="logo">
           <a href="#" class="simple-text">
-          	<img src="<?= $this->baseURL.(isset($this->settings->application_logo) && $this->settings->application_logo != '' ? 'files/app/'.$this->settings->application_logo : 'assets/img/'); ?>" alt="" style="padding: 5px;max-width: 100%;"/>
+          	<img src="<?= $this->baseURL.(isset($this->settings->application_logo) && $this->settings->application_logo != '' ? 'files/app/'.$this->settings->application_logo : 'assets/img/logo.png'); ?>" alt="" style="padding: 5px;max-width: 70%;"/>
           </a>
         </div>
         <div class="sidebar-wrapper">

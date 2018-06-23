@@ -1,19 +1,3 @@
-function settingPasswordVerification(form_selector, modal) {
-  formCallback = function saveSetting() {
-
-    $('*[data-dismiss="modal"]').trigger('click');
-    $('.formToken').val(Cookies.get('token'));
-    submit_form('#updateProfile', '#updateMyProfile');
-
-  }
-
-  js_modal(
-    modal,
-    'app/passwordVerification'
-  );
-
-}
-
 $(document).ready(function() {
 
   var src_avatar = $('.avatar').attr('src');
@@ -52,3 +36,20 @@ $(document).ready(function() {
   $('#upload-default-change-logo').on('change', function () { readFile(this); });
 
 });
+
+function settingPasswordVerification(form_selector, modal) {
+  
+  formCallback = function saveSetting() {
+
+    $('*[data-dismiss="modal"]').trigger('click');
+    $('.formToken').val(Cookies.get('token'));
+    submit_form('#updateProfile', '#updateMyProfile');
+
+  }
+
+  js_modal(
+    modal,
+    'app/passwordVerification'
+  );
+
+}

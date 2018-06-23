@@ -30,8 +30,9 @@ $this->load->view(
               <th width="50">Agent ID</th>
               <th width="100">Name</th>
               <th width="100">IP</th>
-              <th width="680">Date created</th>
-              <th width="50" class="all">Action</th>
+              <th width="580">Date created</th>
+              <th width="150">Config file</th>
+              <th width="230" class="all">Action</th>
             </tr>
           </thead>
           <tbody>
@@ -43,7 +44,8 @@ $this->load->view(
               <th width="100">Name</th>
               <th width="100">IP</th>
               <th width="680">Date created</th>
-              <th width="50" class="all">Action</th>
+              <th width="100">Config file</th>
+              <th width="185" class="all">Action</th>
             </tr> 
           </tfoot>
         </table>
@@ -100,17 +102,23 @@ $this->load->view(
   </div>
 </div>
 
-<!-- Key agent modal -->
-<div class="modal fade" id="keyAgent" tabindex="-1" role="dialog" aria-labelledby="keyAgent">
+<!-- General modal -->
+<div class="modal fade" id="generalModal" tabindex="-1" role="dialog" aria-labelledby="generalModal">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
-      <div class="modal-body">
-        
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Inchide</button>
-      </div>
+    <div class="modal-body">
     </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-default" data-dismiss="modal">Inchide</button>
+    </div>
+    </div>
+  </div>
+</div>
+
+<!-- Create config file for agent modal -->
+<div class="modal fade" id="agentConfigFile" tabindex="-1" role="dialog" aria-labelledby="agentConfigFile">
+  <div class="modal-dialog" role="document">
+    
   </div>
 </div>
 
