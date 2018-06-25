@@ -27,12 +27,12 @@ $this->load->view(
           <thead>
             <tr class="active">
               <th width="25">ID</th>
-              <th width="50">Agent ID</th>
-              <th width="100">Name</th>
-              <th width="100">IP</th>
+              <th width="100">Agent ID</th>
+              <th width="150">Name</th>
+              <th width="200">IP</th>
               <th width="580">Date created</th>
               <th width="150">Config file</th>
-              <th width="230" class="all">Action</th>
+              <th width="440" class="all">Action</th>
             </tr>
           </thead>
           <tbody>
@@ -40,12 +40,12 @@ $this->load->view(
           <tfoot>
             <tr class="active">
               <th width="25">ID</th>
-              <th width="50">Agent ID</th>
-              <th width="100">Name</th>
-              <th width="100">IP</th>
-              <th width="680">Date created</th>
+              <th width="100">Agent ID</th>
+              <th width="150">Name</th>
+              <th width="200">IP</th>
+              <th width="580">Date created</th>
               <th width="100">Config file</th>
-              <th width="185" class="all">Action</th>
+              <th width="440" class="all">Action</th>
             </tr> 
           </tfoot>
         </table>
@@ -60,7 +60,7 @@ $this->load->view(
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="myModalLabel">Creeaza agent nou</h4>
+        <h4 class="modal-title" id="myModalLabel">Create a new agent</h4>
       </div>
       <div class="modal-body">
         <div id="saveAgentResult"></div>
@@ -73,11 +73,11 @@ $this->load->view(
               </div>
             </div>
             <div class="col-md-6">
-              <label for="basic-url">Nume agent</label>
+              <label for="basic-url">Agent name</label>
               <input type="text" class="form-control" name="agent_name">
             </div>
             <div class="col-md-6">
-              <label for="basic-url">IP-ul agentului</label>
+              <label for="basic-url">Agent IP</label>
               <div class="input-group">
                 <span class="input-group-addon" id="basic-addon3">0.0.0.0</span>
                 <input type="text" class="form-control" name="agent_ip">
@@ -87,7 +87,7 @@ $this->load->view(
         </form>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Inchide</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
         <button type="button" class="btn btn-primary" onclick="submit_form('#saveAgent', '#saveAgentResult', false, function (data) {
           dataResult = JSON.parse(data);
           if (dataResult.description != undefined) {
@@ -96,7 +96,7 @@ $this->load->view(
             // Reload table
             agentsTable.api().ajax.reload();
           }
-        }, {});">Salveaza</button>
+        }, {});">Save</button>
       </div>
     </div>
   </div>

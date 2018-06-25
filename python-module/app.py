@@ -140,8 +140,7 @@ def add_agent():
 			}), 409
 
 	# Generate a file with IP and name agent
-	subprocess.check_output('sudo sh -c "echo ' + agent_ip + ', ' + agent_name + ' > ip_name_agent.txt"', shell=True)
-
+	subprocess.check_output('echo ' + agent_ip + ', ' + agent_name + ' > ip_name_agent.txt', shell=True)
 	# Create the new agent and set the output
 	try:
 		agentResponse = subprocess.check_output('sudo /var/ossec/bin/manage_agents -f ip_name_agent.txt', shell=True)

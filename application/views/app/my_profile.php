@@ -21,7 +21,7 @@ $this->load->view(
           <div class="image">
             <img src="<?= base_url(); ?>assets/img/background.jpg" alt="">
           </div>
-          <div class="card-content">
+          <div class="card-content" style="min-height: unset;">
             <div class="author">
               <div class="upload-container">
                 <img class="avatar border-white" src="<?= (isset($dates) && isset($dates->user_avatar) && $dates->user_avatar != 'assets/img/faces/face-1.jpg') ? 'files/app/' . $dates->user_avatar : base_url() . 'assets/img/faces/face-1.jpg'; ?>" alt="No Profile Image">
@@ -45,19 +45,7 @@ $this->load->view(
                 <?= (isset($dates)) ? $dates->user_full_name : ''; ?> <small>( <a href="mailto:<?= (isset($dates)) ? $dates->user_mail : ''; ?>"><?= (isset($dates)) ? $dates->user_name : ''; ?></a> )</small>
                 <br>
                 <small><?= (isset($dates)) ? $dates->user_created_date : ''; ?></small>
-                <br />
               </h4>
-              <hr>
-              <div class="text-center">
-                <div class="row">
-                  <div class="col-md-6">
-                    <h5><?= (isset($actionsUser) && isset($actionsUser->{'user.login'})) ? $actionsUser->{'user.login'} : '0'; ?><br><small>Logins</small></h5>
-                  </div>
-                  <div class="col-md-6">
-                    <h5><?= (isset($actionsUser) && isset($actionsUser->{'user.insert'})) ? $actionsUser->{'user.insert'} : '0'; ?><br><small>Users created</small></h5>
-                  </div>
-                </div>
-              </div>
             </div>
           </div>
         </div>

@@ -24,17 +24,10 @@ class App extends App_Controller {
 
   public function my_profile() {
 
-    $allActions = $this->users_model->getLoginRulesUsers($this->session->userId);
-    $userData = [];
-    foreach ($allActions as $key => $value) {
-      $userData[$value->log_action] = $value->total;
-    }
-
     $this->load->view(
       'app/my_profile',
       [
-        'dates' => $this->users_model->getUserById($this->session->userId),
-        'actionsUser' => (object)$userData
+        'dates' => $this->users_model->getUserById($this->session->userId)
       ]
     );
 

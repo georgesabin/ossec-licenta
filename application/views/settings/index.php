@@ -107,7 +107,11 @@ $this->load->view(
         </form>
         <div class="row">
           <div class="col-xs-12">
-            <button type="button" class="btn btn-success pull-right" onclick="submit_form('#saveOssecConfAction', '#saveOssecConf', 'confirmation', function (data) { $('#generalModal .modal-body').html(JSON.parse(data).error); $('#generalModal').modal('show');  }, {});"><i class="fa fa-save"></i> Save</button>
+            <button type="button" class="btn btn-success pull-right" onclick="submit_form('#saveOssecConfAction', '#saveOssecConf', 'confirmation', function (data) {
+              if (typeof JSON.parse(data).error != 'undefined') { 
+                $('#generalModal .modal-body').html(JSON.parse(data).error);
+                $('#generalModal').modal('show');
+              } }, {});"><i class="fa fa-save"></i> Save</button>
           </div>
         </div>
       </div>
